@@ -1,0 +1,23 @@
+{
+  "name": "orangehrm-playwright-bdd-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.9.0",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
+    "cross-env": "^10.1.0"
+  },
+  "allowScripts": {
+    "fsevents@2.3.2": true
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
