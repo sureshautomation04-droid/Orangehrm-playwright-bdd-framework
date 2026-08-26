@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 
 dotenv.config({
-    path : ".env.qa"
+    path : ".env.qa",
+    override: true
 })
 
 export class ConfigManager {
