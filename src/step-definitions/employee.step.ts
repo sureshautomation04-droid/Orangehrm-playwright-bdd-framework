@@ -2,24 +2,23 @@ import { Given, When, Then } from "@cucumber/cucumber";
 import { LoginPage } from "../pages/LoginPage";
 import { EmployeePage } from "../pages/EmployeePage";
 import { ConfigManager } from "../config/ConfigManager";
-import { generateTestData } from "../utils/TestDataGenerator";
+import { generateEmployeeTestData, EmployeeTestData } from "../utils/TestDataGenerator";
+import { employeePersonalDetails } from "../data/test-data/EmployeePersonalDetails";
 
 let loginPage: LoginPage;
 let employeePage: EmployeePage;
 let employeeId: string;
-
-const employeeData = generateTestData()
+let testData: EmployeeTestData;
 
 Given("user is logged into OrangeHRM application", async function () {
-
     loginPage = new LoginPage(this.page);
     await loginPage.navigate(ConfigManager.baseURL);
     await loginPage.waitForApp();
     await loginPage.login(ConfigManager.username, ConfigManager.password);
     await loginPage.verifyDashboardPage();
     await loginPage.verifyURL(/dashboard/);
-    employeePage = new EmployeePage(this.page)
-
+    employeePage = new EmployeePage(this.page);
+    testData = generateEmployeeTestData();
 });
 
 When("user navigates to PIM module", async function () {
@@ -28,14 +27,14 @@ When("user navigates to PIM module", async function () {
 
 When("user clicks on Add Employee button", async function () {
     await employeePage.clickAddEmployee();
-    await employeePage.verifyVisibleAddEmployeePage()
+    await employeePage.verifyVisibleAddEmployeePage();
 });
 
 When("user enter employee details", async function () {
     await employeePage.enterEmployeeDetails(
-        employeeData.firstName,
-        employeeData.middleName,
-        employeeData.lastName
+        testData.firstName,
+        testData.middleName,
+        testData.lastName
     );
 });
 
@@ -48,10 +47,10 @@ When("user enable Create Login Details Option", async function () {
 });
 
 When("user enter login credentials", async function () {
-    await employeePage.enterUsernameDetails(
-        employeeData.username,
-        employeeData.status,
-        employeeData.password
+    await employeePage.enterLoginCredentials(
+        testData.username,
+        testData.status,
+        testData.password
     );
 });
 
@@ -60,35 +59,33 @@ When("user click save button", async function () {
 });
 
 When("employee should be add successfully", async function () {
-    await employeePage.getToastMessage(employeeData.toastMessage);
+    await employeePage.getToastMessage(testData.toastMessage);
 });
 
 When("Display the employee details", async function () {
     await employeePage.waitForFirstNameField();
-    employeeId = await employeePage.getDisplayEmployeeId();
-
+    employeeId = await employeePage.getDisplayedEmployeeId();
     console.log(`Employee ID: ${employeeId}`);
-
     await employeePage.verifyEmployeeDetails(
-        employeeData.firstName,
-        employeeData.middleName,
-        employeeData.lastName
+        testData.firstName,
+        testData.middleName,
+        testData.lastName
     );
 });
 
 Then("Enter employee Personal details", async function () {
-    await employeePage.enterOtherId('12345');
-    await employeePage.enterDriversLicenseNumber('5678945');
-    await employeePage.enterLicenseExpairedata('2026-29-12');
-    await employeePage.clickNationalityDropdown('India');
-    await employeePage.clickmaritalStatusDropdown('Single');
-    await employeePage.enterDataofBirth('1994-29-12');
-    await employeePage.clickGenderCheckbox('2')
-    await employeePage.clickPersinalInformationSaveButton();
-    await employeePage.getUpadateToastMessage('Successfully Updated');
-    await employeePage.clickBloodGroupDropdown('B+');
-    await employeePage.entertestFeild('Negative');
-    await employeePage.clickcustomFieldnSaveButton();
-    await employeePage.getToastMessage(employeeData.toastMessage);
-
-})
+    await employeePage.clickPersonalDetailsTab();
+    await employeePage.enterOtherId(employeePersonalDetails.otherId);
+    await employeePage.enterDriversLicenseNumber(employeePersonalDetails.drivingLicenseNumber);
+    await employeePage.enterLicenseExpiryDate(employeePersonalDetails.licenseExpiryDate);
+    await employeePage.selectNationality(employeePersonalDetails.nationality);
+    await employeePage.selectMaritalStatus(employeePersonalDetails.maritalStatus);
+    await employeePage.enterDateOfBirth(employeePersonalDetails.dateOfBirth);
+    await employeePage.selectGender(employeePersonalDetails.gender);
+    await employeePage.clickPersonalDetailsSaveButton();
+    await employeePage.getUpdateToastMessage(employeePersonalDetails.updateToastMessage);
+    await employeePage.selectBloodGroup(employeePersonalDetails.bloodGroup);
+    await employeePage.enterTestField(employeePersonalDetails.testField);
+    await employeePage.clickCustomFieldSaveButton();
+    await employeePage.getToastMessage(testData.toastMessage);
+});
