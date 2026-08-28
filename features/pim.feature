@@ -10,4 +10,6 @@ Feature: PIM Module - Add Employee Functionality
         And user enable Create Login Details Option
         And user enter login credentials
         And user click save button
-        Then employee should be add successfully
+        And employee should be add successfully
+        And Display the employee details
+        Then Enter employee Personal details

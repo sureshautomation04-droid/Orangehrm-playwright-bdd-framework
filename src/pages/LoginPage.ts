@@ -18,7 +18,6 @@ export class LoginPage extends BasePage {
 
         // Application root element
         this.appElement = page.locator("#app");
-
         this.dashboardHeader = page.getByRole("heading", { name: "Dashboard" });
     }
 

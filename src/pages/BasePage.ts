@@ -15,7 +15,7 @@ export default class BasePage {
     // Navigate to URL
     async navigate(url: string): Promise<void> {
         try {
-            await this.page.goto(url, {waitUntil: 'load'});
+            await this.page.goto(url, { waitUntil: 'load' });
             console.log(`Successfully navigated to: ${url}`);
         } catch (error) {
             console.error(`Failed to navigate to: ${url}`);
@@ -146,7 +146,7 @@ export default class BasePage {
     }
 
     // Type text
-    async type(locator: Locator, value: string): Promise<void> {
+    async pressSequentially(locator: Locator, value: string): Promise<void> {
         try {
             await locator.pressSequentially(value);
             console.log(`Text typed successfully: ${value}`);
@@ -155,6 +155,21 @@ export default class BasePage {
             console.error(error);
             throw error;
         }
+    }
+
+    // Type text using keyboard
+
+    async type(locator: Locator, value: string): Promise<void> {
+        try {
+            await locator.click();
+            await locator.page().keyboard.type(value);
+            console.log(`Text typed successfully: ${value}`);
+        } catch (error) {
+            console.error(`Failed to type text: ${value}`);
+            console.error(error);
+            throw error;
+        }
+
     }
 
 
@@ -166,9 +181,7 @@ export default class BasePage {
     async getText(locator: Locator): Promise<string> {
         try {
             const text = await locator.innerText();
-
             console.log(`Text retrieved: ${text}`);
-
             return text;
         } catch (error) {
             console.error('Failed to retrieve text');
@@ -181,10 +194,8 @@ export default class BasePage {
     async getInputValue(locator: Locator): Promise<string> {
         try {
             const value = await locator.inputValue();
-
             console.log(`Input value: ${value}`);
-
-            return value;
+            return value.trim();
         } catch (error) {
             console.error('Failed to get input value');
             console.error(error);
@@ -256,9 +267,16 @@ export default class BasePage {
             await locator.check();
             console.log('Radio button selected successfully');
         } catch (error) {
-            console.error('Failed to select radio button');
-            console.error(error);
-            throw error;
+            // Handle case where custom styled wrapper intercepts pointer events
+            console.log('Checkbox method failed, trying click on visible element...');
+            try {
+                await locator.click({ force: true });
+                console.log('Radio button selected via click');
+            } catch (clickError) {
+                console.error('Failed to select radio button');
+                console.error(clickError);
+                throw clickError;
+            }
         }
     }
 
@@ -308,10 +326,42 @@ export default class BasePage {
         }
     }
 
+    // Select custom dropdown option
+    async selectDropdownOption(dropdown: Locator, locator: Locator, option: string): Promise<void> {
+        try {
+            await dropdown.click();
+            // Locate the required option
+            const optionLocator = locator.filter({ hasText: option }).first();
+            // Wait for the required option to be visible
+            await optionLocator.waitFor({ state: 'visible', timeout: 10000 });
+            // Click the option
+            await optionLocator.click();
+            console.log(`Successfully selected option: ${option}`);
+        } catch (error) {
+            console.error(`Failed to select option: ${option}`);
+            console.error(error);
+            throw error;
+        }
+    }
+
 
     // ============================================================
     // VERIFICATION METHODS
     // ============================================================
+
+
+    async verifyEqual(actualValue: string, expectedValue: string): Promise<void> {
+
+        try {
+            expect(actualValue.trim() ?? "").toBe(expectedValue);
+            console.log(`Text verified successfully: ${expectedValue}`);
+        } catch (error) {
+            console.error(`Text verification failed. Expected: ${expectedValue}, Actual: ${actualValue}`);
+            throw error;
+
+        }
+
+    }
 
     // Verify visible
     async verifyVisible(locator: Locator): Promise<void> {
@@ -426,20 +476,25 @@ export default class BasePage {
         }
     }
 
-    // Wait for element hidden
-    async waitForHidden(
-        locator: Locator
-    ): Promise<void> {
+    // Wait for element visible
+    async waitForVisible(locator: Locator): Promise<void> {
         try {
-            await locator.waitFor({
-                state: 'hidden'
-            });
+            await locator.waitFor({ state: 'visible' });
+            console.log('Element is visible');
+        } catch (error) {
+            console.error('Element did not become visible');
+            console.error(error);
+            throw error;
+        }
+    }
 
+    // Wait for element hidden
+    async waitForHidden(locator: Locator): Promise<void> {
+        try {
+            await locator.waitFor({ state: 'hidden' });
             console.log('Element is hidden');
         } catch (error) {
-            console.error(
-                'Element did not become hidden'
-            );
+            console.error('Element did not become hidden');
             console.error(error);
             throw error;
         }
@@ -449,10 +504,7 @@ export default class BasePage {
     async wait(milliseconds: number): Promise<void> {
         try {
             await this.page.waitForTimeout(milliseconds);
-
-            console.log(
-                `Waited for ${milliseconds} milliseconds`
-            );
+            console.log(`Waited for ${milliseconds} milliseconds`);
         } catch (error) {
             console.error('Wait failed');
             console.error(error);
@@ -719,7 +771,7 @@ export default class BasePage {
     // FILE UPLOAD
     // ============================================================
 
-    async uploadFile( locator: Locator,filePath: string ): Promise<void> {
+    async uploadFile(locator: Locator, filePath: string): Promise<void> {
         try {
             await locator.setInputFiles(filePath);
 
