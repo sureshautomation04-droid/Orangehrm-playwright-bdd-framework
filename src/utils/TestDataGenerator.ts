@@ -1,7 +1,11 @@
 import { faker } from "@faker-js/faker";
 
+// ============================================================================
+// Types
+// ============================================================================
+
 /**
- * Employee personal details structure
+ * Employee personal details.
  */
 export interface EmployeePersonalDetails {
     otherId: string;
@@ -17,20 +21,20 @@ export interface EmployeePersonalDetails {
 }
 
 /**
- * Complete test data for employee creation flow
+ * Complete employee test data.
  */
 export interface EmployeeTestData {
-    // Basic employee info
+    // Employee information
     firstName: string;
     middleName: string;
     lastName: string;
 
-    // Login credentials
+    // Login information
     username: string;
     status: "Enabled" | "Disabled";
     password: string;
 
-    // Toast messages
+    // Messages
     toastMessage: string;
     updateToastMessage: string;
 
@@ -38,74 +42,202 @@ export interface EmployeeTestData {
     personalDetails: EmployeePersonalDetails;
 }
 
+// ============================================================================
+// Constants
+// ============================================================================
+
+const NATIONALITIES = [
+    "Indian",
+    "American",
+    "British",
+    "Canadian",
+    "Australian",
+    "German",
+    "French",
+    "Japanese",
+    "Chinese",
+    "Brazilian"
+] as const;
+
+const MARITAL_STATUSES = [
+    "Single",
+    "Married",
+    "Divorced",
+    "Widowed"
+] as const;
+
+const BLOOD_GROUPS = [
+    "A+",
+    "A-",
+    "B+",
+    "B-",
+    "AB+",
+    "AB-",
+    "O+",
+    "O-"
+] as const;
+
+const GENDERS = [
+    "Male",
+    "Female"
+] as const;
+
+const EMPLOYEE_STATUSES = [
+    "Enabled",
+    "Disabled"
+] as const;
+
+const SPECIAL_CHARACTERS = [
+    "@",
+    "#",
+    "$",
+    "%",
+    "&",
+    "*",
+    "!"
+] as const;
+
+// ============================================================================
+// Generators
+// ============================================================================
+
 /**
- * Generates a secure password meeting common requirements
+ * Generates a password containing:
+ * - uppercase character
+ * - lowercase character
+ * - number
+ * - special character
+ * - additional alphanumeric characters
  */
 function generatePassword(): string {
-    const upper = faker.string.alpha({ length: 1, casing: "upper" });
-    const lower = faker.string.alpha({ length: 1, casing: "lower" });
+
+    const upper = faker.string.alpha({
+        length: 1,
+        casing: "upper"
+    });
+
+    const lower = faker.string.alpha({
+        length: 1,
+        casing: "lower"
+    });
+
     const number = faker.string.numeric(1);
-    const special = faker.helpers.arrayElement(["@", "#", "$", "%", "&", "*", "!"]);
+
+    const special = faker.helpers.arrayElement(
+        SPECIAL_CHARACTERS
+    );
+
     const remaining = faker.string.alphanumeric(4);
 
     return faker.helpers
-        .shuffle([upper, lower, number, special, ...remaining])
+        .shuffle([
+            upper,
+            lower,
+            number,
+            special,
+            ...remaining
+        ])
         .join("");
 }
 
 /**
- * Generates random employee personal details
+ * Generates dynamic employee personal details.
  */
 export function generateEmployeePersonalDetails(): EmployeePersonalDetails {
-    const nationalities = [
-        "Indian", "American", "British", "Canadian", "Australian",
-        "German", "French", "Japanese", "Chinese", "Brazilian"
-    ];
-
-    const maritalStatuses = ["Single", "Married", "Divorced", "Widowed"];
-    const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-    const genders: ("Male" | "Female")[] = ["Male", "Female"];
 
     return {
-        otherId: faker.string.alphanumeric(12).toUpperCase(),
+        otherId: faker.string
+            .alphanumeric(12)
+            .toUpperCase(),
+
         drivingLicenseNumber: `DL${faker.string.numeric(8)}`,
-        licenseExpiryDate: faker.date.future({ years: 10 }).toISOString().split("T")[0],
-        nationality: faker.helpers.arrayElement(nationalities),
-        maritalStatus: faker.helpers.arrayElement(maritalStatuses),
-        dateOfBirth: faker.date.birthdate({ min: 18, max: 60, mode: "age" }).toISOString().split("T")[0],
-        gender: faker.helpers.arrayElement(genders),
-        bloodGroup: faker.helpers.arrayElement(bloodGroups),
+
+        licenseExpiryDate: faker.date
+            .future({ years: 10 })
+            .toISOString()
+            .split("T")[0],
+
+        nationality: faker.helpers.arrayElement(
+            NATIONALITIES
+        ),
+
+        maritalStatus: faker.helpers.arrayElement(
+            MARITAL_STATUSES
+        ),
+
+        dateOfBirth: faker.date
+            .birthdate({
+                min: 18,
+                max: 60,
+                mode: "age"
+            })
+            .toISOString()
+            .split("T")[0],
+
+        gender: faker.helpers.arrayElement(
+            GENDERS
+        ),
+
+        bloodGroup: faker.helpers.arrayElement(
+            BLOOD_GROUPS
+        ),
+
         testField: faker.lorem.words(2),
+
         updateToastMessage: "Successfully Updated"
     };
 }
 
 /**
- * Generates complete test data for employee creation flow
+ * Generates complete employee test data.
+ *
+ * This should be the primary test-data factory
+ * for employee creation scenarios.
  */
 export function generateEmployeeTestData(): EmployeeTestData {
+
     const firstName = faker.person.firstName();
     const middleName = faker.person.middleName();
     const lastName = faker.person.lastName();
-    const personalDetails = generateEmployeePersonalDetails();
 
     return {
         firstName,
         middleName,
         lastName,
-        username: faker.internet.username({ firstName, lastName }),
-        status: faker.helpers.arrayElement(["Enabled", "Disabled"]),
+
+        username: faker.internet.username({
+            firstName,
+            lastName
+        }),
+
+        status: faker.helpers.arrayElement(
+            EMPLOYEE_STATUSES
+        ),
+
         password: generatePassword(),
+
         toastMessage: "Successfully Saved",
+
         updateToastMessage: "Successfully Updated",
-        personalDetails
+
+        personalDetails: generateEmployeePersonalDetails()
     };
 }
 
 /**
- * Generates minimal test data (basic info only)
+ * Generates only the basic employee information.
  */
-export function generateBasicEmployeeData(): Pick<EmployeeTestData, "firstName" | "middleName" | "lastName" | "username" | "status" | "password" | "toastMessage"> {
+export function generateBasicEmployeeData(): Pick<
+    EmployeeTestData,
+    | "firstName"
+    | "middleName"
+    | "lastName"
+    | "username"
+    | "status"
+    | "password"
+    | "toastMessage"
+> {
+
     const firstName = faker.person.firstName();
     const middleName = faker.person.middleName();
     const lastName = faker.person.lastName();
@@ -114,31 +246,18 @@ export function generateBasicEmployeeData(): Pick<EmployeeTestData, "firstName" 
         firstName,
         middleName,
         lastName,
-        username: faker.internet.username({ firstName, lastName }),
-        status: faker.helpers.arrayElement(["Enabled", "Disabled"]),
+
+        username: faker.internet.username({
+            firstName,
+            lastName
+        }),
+
+        status: faker.helpers.arrayElement(
+            EMPLOYEE_STATUSES
+        ),
+
         password: generatePassword(),
+
         toastMessage: "Successfully Saved"
-    };
-}
-
-/**
- * For backward compatibility
- * @deprecated Use generateEmployeeTestData() instead
- */
-export interface TestData {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    username: string;
-    status: string;
-    password: string;
-    toastMessage: string;
-}
-
-export function generateTestData(): TestData {
-    const data = generateBasicEmployeeData();
-    return {
-        ...data,
-        status: data.status as string
     };
 }

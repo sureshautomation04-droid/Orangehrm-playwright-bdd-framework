@@ -1,14 +1,15 @@
 import { Given, When, Then } from "@cucumber/cucumber";
-import { LoginPage } from "../pages/LoginPage";
 import { ConfigManager } from "../config/ConfigManager";
 
-let loginPage: LoginPage;
+
 Given('user is on login page', async function () {
 
-    loginPage = new LoginPage(this.page);
-    await loginPage.navigate(ConfigManager.baseURL);
-    await loginPage.waitForApp();
-
+    await this.loginPage!.navigate(ConfigManager.baseURL,{
+        timeout: 60000,
+        waitUntil: 'commit'
+    });
+    // Wait for the login form to be visible
+    await this.loginPage!.waitForLoginForm();
 });
 
 When('user enter valid username and password', async function () {
@@ -16,17 +17,17 @@ When('user enter valid username and password', async function () {
     console.log("USERNAME:", ConfigManager.username);
     console.log("PASSWORD:", ConfigManager.password);
 
-    await loginPage.enterUsername(ConfigManager.username);
-    await loginPage.enterPassword(ConfigManager.password);
+    await this.loginPage!.enterUsername(ConfigManager.username);
+    await this.loginPage!.enterPassword(ConfigManager.password);
 });
 
 When('user click on login button', async function () {
 
-    await loginPage.clickLogin();
+    await this.loginPage!.clickLogin();
 });
 
 Then('user should be navigated to dashboard page', async function () {
 
-    await loginPage.verifyDashboardPage();
-    await loginPage.verifyURL(/dashboard/);
+    await this.loginPage!.verifyDashboardPage();
+    await this.loginPage!.verifyURL(/dashboard/);
 });

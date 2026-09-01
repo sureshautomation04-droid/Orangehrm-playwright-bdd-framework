@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import BasePage from "./BasePage";
 
+
 export class LoginPage extends BasePage {
 
     private readonly usernameTextbox: Locator;
@@ -12,9 +13,9 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.usernameTextbox = page.getByRole("textbox", { name: "Username" });
-        this.passwordTextbox = page.getByRole("textbox", { name: "Password" });
-        this.loginButton = page.getByRole("button", { name: "Login" });
+        this.usernameTextbox = page.locator('input[name="username"]');
+        this.passwordTextbox = page.locator('input[name="password"]');
+        this.loginButton = page.locator('button[type="submit"]');
 
         // Application root element
         this.appElement = page.locator("#app");
@@ -23,6 +24,10 @@ export class LoginPage extends BasePage {
 
     async waitForApp(): Promise<void> {
         await this.waitForSelector(this.appElement);
+    }
+
+    async waitForLoginForm(): Promise<void> {
+        await this.waitForElement(this.usernameTextbox);
     }
 
     async enterUsername(username: string): Promise<void> {

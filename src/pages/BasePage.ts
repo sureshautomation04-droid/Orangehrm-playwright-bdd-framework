@@ -13,9 +13,12 @@ export default class BasePage {
     // ============================================================
 
     // Navigate to URL
-    async navigate(url: string): Promise<void> {
+    async navigate(url: string, options?: { timeout?: number; waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit' }): Promise<void> {
         try {
-            await this.page.goto(url, { waitUntil: 'load' });
+            await this.page.goto(url, {
+                waitUntil: options?.waitUntil || 'domcontentloaded',
+                timeout: options?.timeout || 60000
+            });
             console.log(`Successfully navigated to: ${url}`);
         } catch (error) {
             console.error(`Failed to navigate to: ${url}`);
@@ -81,6 +84,7 @@ export default class BasePage {
     // Click
     async click(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.click();
             console.log('Element clicked successfully');
         } catch (error) {
@@ -93,6 +97,7 @@ export default class BasePage {
     // Double click
     async doubleClick(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.dblclick();
             console.log('Element double-clicked successfully');
         } catch (error) {
@@ -105,6 +110,7 @@ export default class BasePage {
     // Right click
     async rightClick(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.click({
                 button: 'right'
             });
@@ -124,6 +130,7 @@ export default class BasePage {
     // Fill textbox
     async fill(locator: Locator, value: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.fill(value);
             console.log(`Successfully entered value: ${value}`);
         } catch (error) {
@@ -136,6 +143,7 @@ export default class BasePage {
     // Clear textbox
     async clear(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.clear();
             console.log('Element cleared successfully');
         } catch (error) {
@@ -148,6 +156,7 @@ export default class BasePage {
     // Type text
     async pressSequentially(locator: Locator, value: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.pressSequentially(value);
             console.log(`Text typed successfully: ${value}`);
         } catch (error) {
@@ -161,6 +170,7 @@ export default class BasePage {
 
     async type(locator: Locator, value: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.click();
             await locator.page().keyboard.type(value);
             console.log(`Text typed successfully: ${value}`);
@@ -180,6 +190,7 @@ export default class BasePage {
     // Get inner text
     async getText(locator: Locator): Promise<string> {
         try {
+            await locator.focus();
             const text = await locator.innerText();
             console.log(`Text retrieved: ${text}`);
             return text;
@@ -193,8 +204,9 @@ export default class BasePage {
     // Get input value
     async getInputValue(locator: Locator): Promise<string> {
         try {
+            await locator.focus();
             const value = await locator.inputValue();
-            console.log(`Input value: ${value}`);
+            //console.log(`Input value: ${value}`);
             return value.trim();
         } catch (error) {
             console.error('Failed to get input value');
@@ -206,6 +218,7 @@ export default class BasePage {
     // Get attribute
     async getAttribute(locator: Locator, attribute: string): Promise<string | null> {
         try {
+            await locator.focus();
             const value = await locator.getAttribute(attribute);
             console.log(`Attribute ${attribute}: ${value}`);
             return value;
@@ -223,6 +236,7 @@ export default class BasePage {
 
     async hover(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.hover();
             console.log('Element hovered successfully');
         } catch (error) {
@@ -240,6 +254,7 @@ export default class BasePage {
     // Check checkbox
     async check(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.check();
             console.log('Checkbox checked successfully');
         } catch (error) {
@@ -252,6 +267,7 @@ export default class BasePage {
     // Uncheck checkbox
     async uncheck(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.uncheck();
             console.log('Checkbox unchecked successfully');
         } catch (error) {
@@ -264,6 +280,7 @@ export default class BasePage {
     // Check radio button
     async selectRadio(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.check();
             console.log('Radio button selected successfully');
         } catch (error) {
@@ -283,6 +300,7 @@ export default class BasePage {
     // Verify checkbox checked
     async verifyChecked(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toBeChecked();
             console.log('Checkbox is checked');
         } catch (error) {
@@ -300,6 +318,7 @@ export default class BasePage {
     // Select dropdown by value
     async selectOption(locator: Locator, value: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.selectOption(value);
             console.log(`Selected option: ${value}`);
         } catch (error) {
@@ -312,6 +331,7 @@ export default class BasePage {
     // Select dropdown by label
     async selectByLabel(locator: Locator, label: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.selectOption({
                 label: label
             });
@@ -329,8 +349,10 @@ export default class BasePage {
     // Select custom dropdown option
     async selectDropdownOption(dropdown: Locator, locator: Locator, option: string): Promise<void> {
         try {
+            await dropdown.focus();
             await dropdown.click();
             // Locate the required option
+            await locator.focus();
             const optionLocator = locator.filter({ hasText: option }).first();
             // Wait for the required option to be visible
             await optionLocator.waitFor({ state: 'visible', timeout: 10000 });
@@ -350,22 +372,24 @@ export default class BasePage {
     // ============================================================
 
 
-    async verifyEqual(actualValue: string, expectedValue: string): Promise<void> {
-
-        try {
-            expect(actualValue.trim() ?? "").toBe(expectedValue);
-            console.log(`Text verified successfully: ${expectedValue}`);
-        } catch (error) {
-            console.error(`Text verification failed. Expected: ${expectedValue}, Actual: ${actualValue}`);
-            throw error;
-
-        }
-
+    async verifyEqual(locator: Locator,expectedValue: string): Promise<void> {
+    try {
+        await locator.focus();
+        const actualValue = await locator.innerText();
+        expect(actualValue.trim()).toBe(expectedValue);
+        console.log(`Text verified successfully: ${expectedValue}`);
+    } catch (error) {
+        console.error(
+            `Text verification failed. Expected: ${expectedValue}`
+        );
+        throw error;
     }
+}
 
     // Verify visible
     async verifyVisible(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toBeVisible();
             console.log('Element is visible');
         } catch (error) {
@@ -378,6 +402,7 @@ export default class BasePage {
     // Verify hidden
     async verifyHidden(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toBeHidden();
             console.log('Element is hidden');
         } catch (error) {
@@ -390,6 +415,7 @@ export default class BasePage {
     // Verify enabled
     async verifyEnabled(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toBeEnabled();
             console.log('Element is enabled');
         } catch (error) {
@@ -402,6 +428,7 @@ export default class BasePage {
     // Verify disabled
     async verifyDisabled(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toBeDisabled();
             console.log('Element is disabled');
         } catch (error) {
@@ -414,6 +441,7 @@ export default class BasePage {
     // Verify text
     async verifyText(locator: Locator, expectedText: string): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toHaveText(expectedText);
             console.log(`Text verified successfully: ${expectedText}`);
         } catch (error) {
@@ -426,6 +454,7 @@ export default class BasePage {
     // Verify contains text
     async verifyContainsText(locator: Locator, expectedText: string): Promise<void> {
         try {
+            await locator.focus();
             await expect(locator).toContainText(expectedText);
             console.log(`Element contains text: ${expectedText}`);
         } catch (error) {
@@ -455,7 +484,7 @@ export default class BasePage {
     // Wait for element
     async waitForElement(locator: Locator): Promise<void> {
         try {
-            await locator.waitFor({ state: 'visible' });
+            await locator.waitFor({ state: 'visible', timeout: 30000 });
             console.log('Element is visible');
         } catch (error) {
             console.error('Element did not become visible');
@@ -467,6 +496,7 @@ export default class BasePage {
     // Wait until element is attached to the DOM
     async waitForSelector(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.waitFor({ state: 'attached', timeout: 30000 });
             console.log('Element is attached');
         } catch (error) {
@@ -479,6 +509,7 @@ export default class BasePage {
     // Wait for element visible
     async waitForVisible(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.waitFor({ state: 'visible' });
             console.log('Element is visible');
         } catch (error) {
@@ -491,6 +522,7 @@ export default class BasePage {
     // Wait for element hidden
     async waitForHidden(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.waitFor({ state: 'hidden' });
             console.log('Element is hidden');
         } catch (error) {
@@ -518,37 +550,30 @@ export default class BasePage {
     // ============================================================
 
     // Press keyboard key
-    async press(
-        locator: Locator,
-        key: string
-    ): Promise<void> {
+    async press(locator: Locator,key: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.press(key);
-
             console.log(`Pressed key: ${key}`);
         } catch (error) {
-            console.error(
-                `Failed to press key: ${key}`
-            );
+            console.error( `Failed to press key: ${key}`);
             console.error(error);
             throw error;
         }
     }
 
     // Press keyboard on page
-    async pressKey(key: string): Promise<void> {
-        try {
-            await this.page.keyboard.press(key);
-
-            console.log(`Keyboard key pressed: ${key}`);
-        } catch (error) {
-            console.error(
-                `Failed to press keyboard key: ${key}`
-            );
-            console.error(error);
-            throw error;
-        }
+    async pressKey(locator: Locator,key: string): Promise<void> {
+    try {
+        await locator.focus();
+        await this.page.keyboard.press(key);
+        console.log(`Focused element and pressed key: ${key}`);
+    } catch (error) {
+        console.error(`Failed to press key: ${key}`);
+        console.error(error);
+        throw error;
     }
+}
 
 
     // ============================================================
@@ -556,12 +581,10 @@ export default class BasePage {
     // ============================================================
 
     // Scroll element into view
-    async scrollIntoView(
-        locator: Locator
-    ): Promise<void> {
+    async scrollIntoView(locator: Locator): Promise<void> {
         try {
+            await locator.focus();
             await locator.scrollIntoViewIfNeeded();
-
             console.log(
                 'Element scrolled into view successfully'
             );
@@ -600,10 +623,9 @@ export default class BasePage {
     // Get element count
     async getCount(locator: Locator): Promise<number> {
         try {
+            await locator.focus();
             const count = await locator.count();
-
             console.log(`Element count: ${count}`);
-
             return count;
         } catch (error) {
             console.error('Failed to get element count');
@@ -618,8 +640,7 @@ export default class BasePage {
     // ============================================================
 
     // Get frame locator
-    getFrame(
-        selector: string
+    getFrame(selector: string
     ): FrameLocator {
         try {
             return this.page.frameLocator(selector);
@@ -641,6 +662,7 @@ export default class BasePage {
         locator: Locator
     ): Promise<ElementHandle<HTMLElement> | null> {
         try {
+            await locator.focus();
             const element =
                 await locator.elementHandle();
 
@@ -773,8 +795,8 @@ export default class BasePage {
 
     async uploadFile(locator: Locator, filePath: string): Promise<void> {
         try {
+            await locator.focus();
             await locator.setInputFiles(filePath);
-
             console.log(
                 `File uploaded successfully: ${filePath}`
             );
@@ -798,7 +820,7 @@ export default class BasePage {
         filePath: string
     ): Promise<void> {
         try {
-
+            await locator.focus();
             const downloadPromise =
                 this.page.waitForEvent('download');
 
