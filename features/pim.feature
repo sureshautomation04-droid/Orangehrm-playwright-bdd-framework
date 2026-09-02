@@ -9,4 +9,4 @@ Feature: PIM Module - Add Employee Functionality
         And user click save button
         And employee should be add successfully
         And Display the employee details
-        #Then Enter employee Personal details
+        Then Enter employee Personal details

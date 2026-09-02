@@ -62,8 +62,7 @@ const NATIONALITIES = [
 const MARITAL_STATUSES = [
     "Single",
     "Married",
-    "Divorced",
-    "Widowed"
+    "Other",
 ] as const;
 
 const BLOOD_GROUPS = [

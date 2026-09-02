@@ -13,9 +13,9 @@ export class LoginPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.usernameTextbox = page.locator('input[name="username"]');
-        this.passwordTextbox = page.locator('input[name="password"]');
-        this.loginButton = page.locator('button[type="submit"]');
+        this.usernameTextbox = page.getByRole("textbox", { name: "Username" });
+        this.passwordTextbox = page.getByRole("textbox", { name: "Password" });
+        this.loginButton = page.getByRole("button", { name: "Login" });
 
         // Application root element
         this.appElement = page.locator("#app");
@@ -24,10 +24,6 @@ export class LoginPage extends BasePage {
 
     async waitForApp(): Promise<void> {
         await this.waitForSelector(this.appElement);
-    }
-
-    async waitForLoginForm(): Promise<void> {
-        await this.waitForElement(this.usernameTextbox);
     }
 
     async enterUsername(username: string): Promise<void> {
@@ -44,7 +40,6 @@ export class LoginPage extends BasePage {
 
     async login(username: string, password: string): Promise<void> {
         await this.waitForApp();
-
         await this.enterUsername(username);
         await this.enterPassword(password);
         await this.clickLogin();

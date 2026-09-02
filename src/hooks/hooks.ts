@@ -2,9 +2,10 @@ import { Before, After, setDefaultTimeout } from "@cucumber/cucumber";
 import { chromium } from "@playwright/test";
 import { LoginPage } from "../pages/LoginPage";
 import { EmployePage } from "../pages/EmployeePage";
+import { SearchemployeePage } from "../pages/SearchemployeePage";
 import { generateEmployeeTestData } from "../utils/TestDataGenerator";
 
-setDefaultTimeout(60000); // Cucumber step timeout: 60 seconds
+setDefaultTimeout(120000); // Cucumber step timeout: 120 seconds
 
 Before(async function () {
     this.browser = await chromium.launch({
@@ -20,10 +21,18 @@ Before(async function () {
 
     this.loginPage = new LoginPage(this.page);
     this.employeePage = new EmployePage(this.page);
+    this.searchemployeePage = new SearchemployeePage(this.page);
 
 
     // Initialize test data
     this.testData = generateEmployeeTestData();
+
+    // Initialize personal data from test data
+    this.personalData = this.testData.personalDetails;
+
+    // Employee ID will be captured from UI after employee creation
+    this.employeeId = "";
+    
 });
 
 After(async function () {

@@ -6,10 +6,8 @@ Given('user is on login page', async function () {
 
     await this.loginPage!.navigate(ConfigManager.baseURL,{
         timeout: 60000,
-        waitUntil: 'commit'
+        waitUntil: 'domcontentloaded'
     });
-    // Wait for the login form to be visible
-    await this.loginPage!.waitForLoginForm();
 });
 
 When('user enter valid username and password', async function () {

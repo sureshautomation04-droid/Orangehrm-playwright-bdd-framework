@@ -345,46 +345,58 @@ export default class BasePage {
             throw error;
         }
     }
+    // customDropdown
+   async customDropdown(
+    dropdown: Locator,
+    option: string
+): Promise<void> {
+    try {
+        await dropdown.focus();
+        await dropdown.click();
 
-    // Select custom dropdown option
-    async selectDropdownOption(dropdown: Locator, locator: Locator, option: string): Promise<void> {
-        try {
-            await dropdown.focus();
-            await dropdown.click();
-            // Locate the required option
-            await locator.focus();
-            const optionLocator = locator.filter({ hasText: option }).first();
-            // Wait for the required option to be visible
-            await optionLocator.waitFor({ state: 'visible', timeout: 10000 });
-            // Click the option
-            await optionLocator.click();
-            console.log(`Successfully selected option: ${option}`);
-        } catch (error) {
-            console.error(`Failed to select option: ${option}`);
-            console.error(error);
-            throw error;
-        }
+        const optionLocator = this.page.locator('.oxd-select-option').filter({ hasText: option }).first();
+        await optionLocator.focus();
+        await optionLocator.waitFor({ state: 'visible'});
+        await optionLocator.click();
+
+        console.log(
+            `Successfully selected dropdown option: ${option}`
+        );
+
+    } catch (error) {
+        console.error(
+            `Failed to select dropdown option: ${option}`
+        );
+        console.error(error);
+
+        throw error;
     }
-
+}
 
     // ============================================================
     // VERIFICATION METHODS
     // ============================================================
 
 
-    async verifyEqual(locator: Locator,expectedValue: string): Promise<void> {
-    try {
-        await locator.focus();
-        const actualValue = await locator.innerText();
-        expect(actualValue.trim()).toBe(expectedValue);
-        console.log(`Text verified successfully: ${expectedValue}`);
-    } catch (error) {
-        console.error(
-            `Text verification failed. Expected: ${expectedValue}`
-        );
-        throw error;
+    async verifyEqual(locator: Locator, expectedValue: string): Promise<void> {
+        try {
+            await locator.focus();
+            let actualValue = '';
+            const tagName = await locator.evaluate(el => el.tagName.toLowerCase());
+            if (tagName === 'input' || tagName === 'textarea') {
+                actualValue = await locator.inputValue();
+            } else {
+                actualValue = await locator.innerText();
+            }
+            expect(actualValue.trim()).toBe(expectedValue);
+            console.log(`Text verified successfully: ${expectedValue}`);
+        } catch (error) {
+            console.error(
+                `Text verification failed. Expected: ${expectedValue}`
+            );
+            throw error;
+        }
     }
-}
 
     // Verify visible
     async verifyVisible(locator: Locator): Promise<void> {
@@ -550,30 +562,30 @@ export default class BasePage {
     // ============================================================
 
     // Press keyboard key
-    async press(locator: Locator,key: string): Promise<void> {
+    async press(locator: Locator, key: string): Promise<void> {
         try {
             await locator.focus();
             await locator.press(key);
             console.log(`Pressed key: ${key}`);
         } catch (error) {
-            console.error( `Failed to press key: ${key}`);
+            console.error(`Failed to press key: ${key}`);
             console.error(error);
             throw error;
         }
     }
 
     // Press keyboard on page
-    async pressKey(locator: Locator,key: string): Promise<void> {
-    try {
-        await locator.focus();
-        await this.page.keyboard.press(key);
-        console.log(`Focused element and pressed key: ${key}`);
-    } catch (error) {
-        console.error(`Failed to press key: ${key}`);
-        console.error(error);
-        throw error;
+    async pressKey(locator: Locator, key: string): Promise<void> {
+        try {
+            await locator.focus();
+            await this.page.keyboard.press(key);
+            console.log(`Focused element and pressed key: ${key}`);
+        } catch (error) {
+            console.error(`Failed to press key: ${key}`);
+            console.error(error);
+            throw error;
+        }
     }
-}
 
 
     // ============================================================
