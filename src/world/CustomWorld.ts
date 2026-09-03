@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { EmployePage } from "../pages/EmployeePage";
 import { SearchemployeePage } from "../pages/SearchemployeePage";
 import { DeleteEmployeePage } from "../pages/DeleteemployeePage";
+import { EditDriverLicensePage } from "../pages/EditdriverlicensePage";
 import { EmployeeTestData, EmployeePersonalDetails } from "../utils/TestDataGenerator";
 
 
@@ -19,6 +20,7 @@ export class CustomWorld extends World {
     employeePage?: EmployePage;
     searchemployeePage?: SearchemployeePage;
     deleteemployeePage?: DeleteEmployeePage;
+    editdriverlicensePage?: EditDriverLicensePage
 
     testData?: EmployeeTestData;
     personalData?: EmployeePersonalDetails;

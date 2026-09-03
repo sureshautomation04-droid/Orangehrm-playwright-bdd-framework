@@ -8,6 +8,7 @@ module.exports = {
             "features/login.feature",
             "features/pim.feature",
             "features/searchbyemployeeid.feature",
+            "features/editdriverlicense.feature",
             "features/deleteemployeeid.feature",
             
         ],

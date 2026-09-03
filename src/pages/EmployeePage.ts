@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import BasePage from "./BasePage";
 
-export class EmployePage extends BasePage {
+export  class EmployePage extends BasePage {
 
     // Navigation locators
     private readonly pimLink: Locator;
@@ -22,7 +22,7 @@ export class EmployePage extends BasePage {
     // Add Personal Details from locators
     private readonly emplyeeIdTextbox: Locator;
     private readonly otherIdTextbox: Locator;
-    private readonly driverLicenseTextbox: Locator;
+    protected readonly driverLicenseTextbox: Locator;
 
     //Button locators
     private readonly saveButton: Locator;
@@ -167,6 +167,7 @@ export class EmployePage extends BasePage {
     async enterdriverLicense(driverlicense: string): Promise<void> {
         await this.type(this.driverLicenseTextbox, driverlicense);
     }
+
 
     async enterLicenseExpiryDate(expirydate: string): Promise<void> {
         await this.type(this.licenseExpiryDateTextbox, expirydate)

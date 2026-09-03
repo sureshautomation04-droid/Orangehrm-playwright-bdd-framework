@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { EmployePage } from "../pages/EmployeePage";
 import { SearchemployeePage } from "../pages/SearchemployeePage";
 import { DeleteEmployeePage } from "../pages/DeleteemployeePage";
+import { EditDriverLicensePage } from "../pages/EditdriverlicensePage";
 import { generateEmployeeTestData } from "../utils/TestDataGenerator";
 
 setDefaultTimeout(120000); // Cucumber step timeout: 120 seconds
@@ -24,6 +25,7 @@ Before(async function () {
     this.employeePage = new EmployePage(this.page);
     this.searchemployeePage = new SearchemployeePage(this.page);
     this.deleteemployeePage = new DeleteEmployeePage(this.page);
+    this.editdriverlicensePage = new EditDriverLicensePage(this.page);
 
 
     // Initialize test data
