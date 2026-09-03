@@ -3,6 +3,7 @@ import { chromium } from "@playwright/test";
 import { LoginPage } from "../pages/LoginPage";
 import { EmployePage } from "../pages/EmployeePage";
 import { SearchemployeePage } from "../pages/SearchemployeePage";
+import { DeleteEmployeePage } from "../pages/DeleteemployeePage";
 import { generateEmployeeTestData } from "../utils/TestDataGenerator";
 
 setDefaultTimeout(120000); // Cucumber step timeout: 120 seconds
@@ -22,6 +23,7 @@ Before(async function () {
     this.loginPage = new LoginPage(this.page);
     this.employeePage = new EmployePage(this.page);
     this.searchemployeePage = new SearchemployeePage(this.page);
+    this.deleteemployeePage = new DeleteEmployeePage(this.page);
 
 
     // Initialize test data
@@ -29,6 +31,7 @@ Before(async function () {
 
     // Initialize personal data from test data
     this.personalData = this.testData.personalDetails;
+
 
     // Employee ID will be captured from UI after employee creation
     this.employeeId = "";

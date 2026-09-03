@@ -199,12 +199,11 @@ export class EmployePage extends BasePage {
     async getUpdateToastMessage(expectedMessage: string): Promise<string> {
         await this.waitForVisible(this.successToastUpdateMessage);
         await this.verifyEqual(this.successToastUpdateMessage, expectedMessage);
-        await this.waitForElement(this.firstNameTextbox);
         return await this.successToastUpdateMessage.innerText();
     }
 
     async enterBloodtype(option: string): Promise<void> {
-        await this.waitForElement(this.bloodtypeDropdownTrigger);
+        await this.waitForVisible(this.bloodtypeDropdownTrigger);
         await this.customDropdown(this.bloodtypeDropdownTrigger, option);
     }
 

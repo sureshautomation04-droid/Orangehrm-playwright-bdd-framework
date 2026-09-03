@@ -37,6 +37,7 @@ export interface EmployeeTestData {
     // Messages
     toastMessage: string;
     updateToastMessage: string;
+    deleteToastMessage: string;
 
     // Personal details
     personalDetails: EmployeePersonalDetails;
@@ -218,6 +219,8 @@ export function generateEmployeeTestData(): EmployeeTestData {
         toastMessage: "Successfully Saved",
 
         updateToastMessage: "Successfully Updated",
+
+        deleteToastMessage: "Successfully Deleted",
 
         personalDetails: generateEmployeePersonalDetails()
     };

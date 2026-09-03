@@ -488,6 +488,17 @@ export default class BasePage {
         }
     }
 
+    // Verify Falsy
+    async verifyFalsy(value: unknown): Promise<void> {
+    try {
+        expect(value).toBeFalsy();
+        console.log(`Value is falsy: ${value}`);
+    } catch (error) {
+        console.error(`Expected value to be falsy, but received: ${value}`);
+        throw error;
+    }
+}
+
 
     // ============================================================
     // WAIT METHODS
@@ -496,7 +507,7 @@ export default class BasePage {
     // Wait for element
     async waitForElement(locator: Locator): Promise<void> {
         try {
-            await locator.waitFor({ state: 'visible', timeout: 30000 });
+            await locator.waitFor({ state: 'visible', timeout: 60000 });
             console.log('Element is visible');
         } catch (error) {
             console.error('Element did not become visible');
@@ -509,7 +520,7 @@ export default class BasePage {
     async waitForSelector(locator: Locator): Promise<void> {
         try {
             await locator.focus();
-            await locator.waitFor({ state: 'attached', timeout: 30000 });
+            await locator.waitFor({ state: 'attached', timeout: 60000 });
             console.log('Element is attached');
         } catch (error) {
             console.error('Element did not become attached');

@@ -3,6 +3,7 @@ import { Browser, BrowserContext, Page } from "@playwright/test";
 import { LoginPage } from "../pages/LoginPage";
 import { EmployePage } from "../pages/EmployeePage";
 import { SearchemployeePage } from "../pages/SearchemployeePage";
+import { DeleteEmployeePage } from "../pages/DeleteemployeePage";
 import { EmployeeTestData, EmployeePersonalDetails } from "../utils/TestDataGenerator";
 
 
@@ -17,6 +18,7 @@ export class CustomWorld extends World {
     loginPage?: LoginPage;
     employeePage?: EmployePage;
     searchemployeePage?: SearchemployeePage;
+    deleteemployeePage?: DeleteEmployeePage;
 
     testData?: EmployeeTestData;
     personalData?: EmployeePersonalDetails;

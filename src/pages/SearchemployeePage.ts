@@ -3,9 +3,9 @@ import BasePage from "./BasePage";
 
 export class SearchemployeePage extends BasePage {
 
-    private readonly searchEmployeeId;
-    private readonly searchButton;
-    private readonly searchResultEmployeeId;
+    private readonly searchEmployeeId: Locator;
+    private readonly searchButton: Locator;
+    private readonly searchResultEmployeeId: Locator;
 
     constructor(page: Page) {
         super(page);

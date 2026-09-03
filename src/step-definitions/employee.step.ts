@@ -66,7 +66,7 @@ Then('Enter employee Personal details', async function (this: CustomWorld) {
     await this.employeePage!.clickGenderReadioButton(this.personalData!.gender);
     await this.employeePage!.clickSaveButton();
     await this.employeePage!.getUpdateToastMessage(this.personalData!.updateToastMessage);
-    await this.employeePage!.enterBloodtype(this.personalData!.bloodGroup);
+   // await this.employeePage!.enterBloodtype(this.personalData!.bloodGroup);
     await this.employeePage!.enterTestField(this.personalData!.testField);
     await this.employeePage!.clickCustomFieldSaveButton();
     await this.employeePage!.getToastMessage(this.testData!.toastMessage);

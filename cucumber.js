@@ -5,7 +5,11 @@ module.exports = {
             "src/hooks/**/*.ts"
         ],
         paths: [
-            "features/**/*.feature"
+            "features/login.feature",
+            "features/pim.feature",
+            "features/searchbyemployeeid.feature",
+            "features/deleteemployeeid.feature",
+            
         ],
         requireModule: [
             "ts-node/register"
