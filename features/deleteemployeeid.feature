@@ -6,4 +6,4 @@ Feature: Delete Employee By Employee ID
     And user deletes the employee
     Then employee should be deleted successfully
     When user searches employee using employee id again
-    Then employee should not be displayed in earch result
+    Then employee should not be displayed in search result

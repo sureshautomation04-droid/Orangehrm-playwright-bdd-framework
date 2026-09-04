@@ -6,7 +6,7 @@ export class EditDriverLicensePage extends EmployePage {
 
     constructor(page: Page) {
         super(page);
-        this.editEmployeeIcon = page.locator('.oxd-icon-button:has(.bi-pencil-fill)').first();
+        this.editEmployeeIcon = page.locator(".oxd-icon-button:has(.bi-pencil-fill)").first();
     }
 
     async clickEditEmployee(): Promise<void> {
@@ -15,23 +15,22 @@ export class EditDriverLicensePage extends EmployePage {
     }
 
     async clearAndUpdateDriverLicense(driverlicense: string): Promise<void> {
-        await this.waitForElement(this.driverLicenseTextbox);
+        await this.wait(2000);
         await this.clear(this.driverLicenseTextbox);
+        await this.wait(2000);
         await this.type(this.driverLicenseTextbox, driverlicense);
-        // Must save — otherwise no "Successfully Updated" toast ever appears
         await this.clickSaveButton();
     }
 
     async getDriverLicenseNumber(): Promise<string> {
         await this.waitForVisible(this.driverLicenseTextbox);
-        await this.wait(3000);
         return this.getInputValue(this.driverLicenseTextbox);
     }
 
-    async displayedDriverLicenseNumber(): Promise<void> {
-        const actualdriverLicence: string = await this.getDriverLicenseNumber();
-        await this.verifyEqual(this.driverLicenseTextbox, actualdriverLicence);
-        await this.wait(3000);
+    async verifyUpdatedDriverLicenseNumber(expected: string): Promise<void> {
+        const actual = await this.getDriverLicenseNumber();
+        await this.verifyEqual(this.driverLicenseTextbox, expected);
+        // Keep for debugging if needed: console.log('actual', actual);
+        void actual;
     }
-
 }

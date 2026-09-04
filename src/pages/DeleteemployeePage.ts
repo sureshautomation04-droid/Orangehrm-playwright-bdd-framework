@@ -9,20 +9,19 @@ export class DeleteEmployeePage extends BasePage {
 
     constructor(page: Page) {
         super(page);
-        this.deleteIcon = page.locator('button.oxd-icon-button:has(i.bi-trash)').first();
+        this.deleteIcon = page.locator("button.oxd-icon-button:has(i.bi-trash)").first();
         this.confirmDeleteIcon = page.getByRole("button", { name: "Yes, Delete" });
-        this.successToastDeleteMessage = page.getByText('Successfully Deleted');
-        this.searchResultRows = page.locator('oxd-table-card');
-
+        this.successToastDeleteMessage = page.getByText("Successfully Deleted");
+        this.searchResultRows = page.locator("oxd-table-card");
     }
 
     async clickDeleteIcon(): Promise<void> {
-        await this.waitForVisible(this.deleteIcon)
+        await this.waitForVisible(this.deleteIcon);
         await this.click(this.deleteIcon);
     }
 
     async clickConfirmDelete(): Promise<void> {
-        await this.wait(3000)
+        await this.waitForVisible(this.confirmDeleteIcon);
         await this.click(this.confirmDeleteIcon);
     }
 
@@ -43,8 +42,6 @@ export class DeleteEmployeePage extends BasePage {
 
     async isVerifyEmployeeRowCount(): Promise<void> {
         const employeeFound = await this.isEmployeeRowResult();
-        await this.verifyFalsy(employeeFound)
+        await this.verifyFalsy(employeeFound);
     }
-   
-
 }
